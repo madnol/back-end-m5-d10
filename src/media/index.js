@@ -8,6 +8,7 @@ const { check } = require("express-validator");
 
 const mediasPath = join(__dirname, "media.json");
 // get medias from axios or from file with title
+
 mediaRoute.get("/", async (req, res, next) => {
   try {
     if (req.query && req.query.title) {
@@ -15,7 +16,7 @@ mediaRoute.get("/", async (req, res, next) => {
         .get(`http://www.omdbapi.com/?apikey=bdddd0c1&t=${req.query.title}`)
         .then(response => res.send(response.data));
     } else {
-      let medias = getmedias(mediasPath);
+      let medias = await getmedias(mediasPath);
 
       res.send(medias);
     }
