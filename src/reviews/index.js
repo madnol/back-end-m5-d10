@@ -20,7 +20,7 @@ reviewsRouter.get("/:id", async (req, res) => {
   try {
     let reviews = await readDB(reviewsJsonPath);
     let filteredArray = reviews.filter(
-      (review) => review.elementId === req.params.id
+      review => review.elementId === req.params.id
     );
 
     res.send(filteredArray);
@@ -48,9 +48,9 @@ reviewsRouter.post("/:id", async (req, res) => {
 
 reviewsRouter.put("/:id", async (req, res) => {
   let reviews = await readDB(reviewsJsonPath);
-  let index = reviews.findIndex((review) => review._id === req.params.id);
+  let index = reviews.findIndex(review => review._id === req.params.id);
   console.log(index);
-  let filteredArray = reviews.filter((review) => review._id !== req.params.id);
+  let filteredArray = reviews.filter(review => review._id !== req.params.id);
   let replacement = {
     _id: req.params.id,
     ...req.body,
@@ -61,7 +61,7 @@ reviewsRouter.put("/:id", async (req, res) => {
 });
 reviewsRouter.delete("/:id", async (req, res) => {
   let reviews = await readDB(reviewsJsonPath);
-  let filteredArray = reviews.filter((review) => review._id !== req.params.id);
+  let filteredArray = reviews.filter(review => review._id !== req.params.id);
   await writeDB(reviewsJsonPath, filteredArray);
   res.send("deleted");
 });

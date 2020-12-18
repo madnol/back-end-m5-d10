@@ -1,68 +1,68 @@
-const { getmovies, writemovies } = require("../fsUtilities");
+const { getmedias, writemedias } = require("../fsUtilities");
 const axios = require("axios");
 const express = require("express");
-const movieRoute = express.Router();
+const mediaRoute = express.Router();
 const { join } = require("path");
 const { check } = require("express-validator");
 // const PDFDocument = require("pdfkit")
 
-const moviesPath = join(__dirname, "media.json");
-// get movies from axios or from file with title
-movieRoute.get("/", async (req, res, next) => {
+const mediasPath = join(__dirname, "media.json");
+// get medias from axios or from file with title
+mediaRoute.get("/", async (req, res, next) => {
   try {
     if (req.query && req.query.title) {
       let response = axios
-        .get(`http://www.omdbapi.com/?apikey=73cccb60&t=${req.query.title}`)
+        .get(`http://www.omdbapi.com/?apikey=bdddd0c1&t=${req.query.title}`)
         .then(response => res.send(response.data));
     } else {
-      let movies = getmovies();
+      let medias = getmedias(mediasPath);
 
-      res.send(movies);
+      res.send(medias);
     }
   } catch (err) {
     console.log(err), next(err);
   }
 });
 
-// get movies with id
-movieRoute.get("/:id", async (req, res, next) => {
+// get medias with id
+mediaRoute.get("/:id", async (req, res, next) => {
   let response = axios
-    .get(`http://www.omdbapi.com/?apikey=73cccb60&i=${req.params.id}`)
+    .get(`http://www.omdbapi.com/?apikey=bdddd0c1&i=${req.params.id}`)
     .then(response => res.send(response.data));
 });
 
-movieRoute.post("/", async (req, res, next) => {
+mediaRoute.post("/", async (req, res, next) => {
   check("imdbID").exists().withMessage("imdbID is required").not().isEmpty();
   try {
-    let newMovie = { ...req.body };
-    let movies = await getmovies(moviesPath);
-    movies.push(newMovie);
-    await writemovies(movies);
-    res.send("post movie");
+    let newmedia = { ...req.body };
+    let medias = await getmedias(mediasPath);
+    medias.push(newmedia);
+    await writemedias(medias);
+    res.send("media posted correctly!");
   } catch (err) {
     console.log(err), next(err);
   }
 });
-movieRoute.put("/:id", async (req, res, next) => {
-  let movies = await getmovies(moviesPath);
-  let filteredmovie = movies.filter(movie => movie.imdbID !== req.params.id);
+mediaRoute.put("/:id", async (req, res, next) => {
+  let medias = await getmedias(mediasPath);
+  let filteredmedia = medias.filter(media => media.imdbID !== req.params.id);
 
-  editedmovie = { ...req.body, imdbID: req.params.id };
-  filteredmovie.push(editedmovie);
-  await writemovies(filteredmovie);
-  res.send("updated movie");
+  editedmedia = { ...req.body, imdbID: req.params.id };
+  filteredmedia.push(editedmedia);
+  await writemedias(filteredmedia);
+  res.send("updated media");
 });
 
-movieRoute.delete("/:id", async (req, res, next) => {
+mediaRoute.delete("/:id", async (req, res, next) => {
   try {
-    let movies = await getmovies(moviesPath);
-    let filteredmovie = movies.filter(movie => movie.imdbID !== req.params.id);
-    await writemovies(filteredmovie);
+    let medias = await getmedias(mediasPath);
+    let filteredmedia = medias.filter(media => media.imdbID !== req.params.id);
+    await writemedias(filteredmedia);
 
-    res.send(filteredmovie);
+    res.send(filteredmedia);
   } catch (err) {
     console.log(err), next(err);
   }
 });
 
-module.exports = movieRoute;
+module.exports = mediaRoute;
